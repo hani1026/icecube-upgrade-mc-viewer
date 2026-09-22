@@ -50,6 +50,7 @@ Requires a compatible IceTray environment with `dataio`, `dataclasses`, `simclas
 /path/to/icetray/build/env-shell.sh /path/to/icetray/python codes/export_events.py
 /path/to/icetray/build/env-shell.sh /path/to/icetray/python codes/validate_export.py
 node tests.cjs
+node scene.test.cjs
 ```
 
 The exporter follows the inspected Upgrade MC production reference (`Transformer_For_Upgrade/legacy/01_data_check/00_upgrade_mc_reference.md`) for P-frame cuts and schema. The validator reads every selected event back from its native source and checks exact primary, full tree including parent indices, every pulse field, GCD module/PMT positions and file hashes. Browser UI checks are recorded in `verification.md`.
@@ -69,3 +70,5 @@ The full 2,368-event export was checked for electron/tau parent–daughter posit
 Muon-decay electrons differ from the muon start in 389 of 391 stored pairs. That separation belongs to the parent's propagation before electron birth. The existing propagated muon segments are retained; it is not relabeled as an electron track. The general endpoint fallback is tested with displaced tau and neutrino fixtures, preserves millimetre distances, and adds **zero** inferred segments to this current export. No spatial amplification is used.
 
 Slider matching ranks the selected flavor/sign/interaction by squared distances in `log10(E)/0.25` and `cos(zenith)/0.25`; optional circular azimuth distance uses 45°. The requested settings are not claimed to be exact sampled values. Native events, pulse payloads, and the source manifest are unchanged by the UI revision.
+
+Event selection keeps the current page stable while the sliders are dragged. Use **Copy link** (or **Event details → Event link**) to share the current event; changing controls does not rewrite the address bar on every selection.

@@ -34,4 +34,7 @@ The checks validate a representative set of visible interactions. The exact nati
 - Native finite paths remain 1,559. The endpoint fallback produces no extra segments for these source records.
 - 144 combinations of particle/sign/interaction, energy extremes and zenith directions return correctly classified, distance-ranked native events.
 - Endpoint tests verify zero displacement for shared birth vertices, preservation of a 1 mm tau displacement, proper parent identity for neutrino-to-tau connections, rejection of ambiguous endpoints, and suppression of duplicate propagated tracks.
-- The public UI revision is verified after deployment.
+- The public revision restores the original segmented controls, energy/zenith sliders, glass panel, full canvas and compact playback bar. Desktop screenshot comparison used the original published viewer as the reference.
+- Changing electron-neutrino / 100 GeV / 60° selects the nearest native event; its actual energy and zenith are shown separately. Electron event details show Δr = 0 and Δt = 0. The focused scene displays a colored e+ marker at the shared recorded birth point.
+- `node scene.test.cjs` builds real Three.js scene objects on the CPU, checks exact native track endpoints for all three flavors, Earth/Detector visibility and theme rebuilding. WebGL rendering is checked separately in the public browser.
+- Event selection no longer rewrites the URL for every slider change: embedded-browser navigation was resetting the requested controls. Explicit Copy link / Event link still encode the current event.
