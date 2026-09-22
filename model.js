@@ -2,6 +2,15 @@
 const MC = (() => {
   const validVector = v => Array.isArray(v) && v.length === 3 && v.every(Number.isFinite);
   const distance = (a,b) => Math.hypot(...a.map((v,i)=>v-b[i]));
+  function incoming(primary, length=2000) {
+    if (!validVector(primary.pos) || !validVector(primary.dir) || !Number.isFinite(primary.time) || !(length>0) || !Number.isFinite(length)) return null;
+    const norm=Math.hypot(...primary.dir);
+    if (!norm) return null;
+    const dir=primary.dir.map(v=>v/norm),speed=.299792458; // metres / ns
+    // Display only the final 2 km, back-extrapolated from the interaction.
+    // This is not a sampled production vertex or a stored MC track.
+    return {...primary,dir,speed,length,pos:primary.pos.map((v,i)=>v-dir[i]*length),end:[...primary.pos],time:primary.time-length/speed,endTime:primary.time,provenance:'direction-extrapolation'};
+  }
   function segments(event) {
     const result=[];
     event.truth.forEach((p,index)=>{
@@ -34,6 +43,6 @@ const MC = (() => {
       return {event,score:dE*dE+dZ*dZ+dA*dA};
     }).sort((a,b)=>a.score-b.score || a.event.id.localeCompare(b.event.id));
   }
-  return {validVector,distance,segments,rank};
+  return {validVector,distance,incoming,segments,rank};
 })();
 if(typeof module!=='undefined') module.exports=MC;

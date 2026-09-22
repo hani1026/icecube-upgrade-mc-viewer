@@ -38,3 +38,10 @@ The checks validate a representative set of visible interactions. The exact nati
 - Changing electron-neutrino / 100 GeV / 60° selects the nearest native event; its actual energy and zenith are shown separately. Electron event details show Δr = 0 and Δt = 0. The focused scene displays a colored e+ marker at the shared recorded birth point.
 - `node scene.test.cjs` builds real Three.js scene objects on the CPU, checks exact native track endpoints for all three flavors, Earth/Detector visibility and theme rebuilding. WebGL rendering is checked separately in the public browser.
 - Event selection no longer rewrites the URL for every slider change: embedded-browser navigation was resetting the requested controls. Explicit Copy link / Event link still encode the current event.
+
+## Incoming neutrino animation (v5)
+
+- Back-extrapolate the final 2,000 m along the normalized primary propagation vector; use c = 0.299792458 m/ns and the stored interaction time as the endpoint. This path is explicitly a direction extrapolation, separate from stored truth segments.
+- A moving flavor-colored ν marker and dashed trail disappear at the interaction; recorded daughter markers and pulses retain their original times and positions. Replay and scrubbing reconstruct the same incoming position.
+- All 2,368 event checksums and 325,537 pulses passed the existing integrity checks. Added checks cover incoming endpoints, direction, length and time of flight for every event. Three.js scene checks cover start, midpoint, arrival and rewind for all three flavors.
+- Local browser inspection of event 120029-000879-751-0 at t = −4,172 ns shows the incoming νe marker below the detector on its upward flight, with no interaction marker yet.

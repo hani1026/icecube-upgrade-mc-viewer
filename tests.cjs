@@ -4,6 +4,8 @@ process.chdir(__dirname);const MC=require('./model.js');const read=p=>JSON.parse
 const catalogue=read('data/catalogue.json'),geometry=read('data/geometry.json'),metadata=read('data/metadata.json');
 let native=0,vertices=0,pulses=0;const ids=new Set();
 for(const entry of catalogue){assert(!ids.has(entry.id));ids.add(entry.id);const path=`data/events/${entry.id}.json`;assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path)).digest('hex'),entry.sha256);const e=read(path);assert.equal(e.pulses.length,entry.pulses);assert(Math.abs(e.primary.dir[2]+e.coszen)<1e-12);pulses+=e.pulses.length;
+ const incoming=MC.incoming(e.primary);assert(incoming);assert.equal(incoming.provenance,'direction-extrapolation');assert.equal(incoming.endTime,e.primary.time);assert(MC.distance(incoming.end,e.primary.pos)<1e-10);assert(Math.abs(MC.distance(incoming.pos,incoming.end)-2000)<1e-9);assert(Math.abs((incoming.endTime-incoming.time)*incoming.speed-2000)<1e-9);assert(incoming.dir.every((v,i)=>(incoming.end[i]-incoming.pos[i])*v>=0));
+
  for(const s of MC.segments(e)){assert(s.length>0);assert(s.endTime>=s.time);assert(s.shape!=='Dark');assert(Math.abs(MC.distance(s.pos,s.end)-s.length)<1e-6);if(s.provenance==='length'){native++;assert.equal(s.length,e.truth[s.index].length);}else{vertices++;assert(e.truth.some(c=>c.parent===s.index && MC.distance(c.pos,s.end)<1e-4));}}
 }
 assert.equal(ids.size,metadata.events);assert.equal(pulses,metadata.selected_quality.pulses);assert.equal(geometry.surface_z-geometry.bedrock_z,2810);
