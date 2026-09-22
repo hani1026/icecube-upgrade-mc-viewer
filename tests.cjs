@@ -1,14 +1,20 @@
 'use strict';
-const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
-const path=require('node:path');process.chdir(__dirname);
-const read=p=>JSON.parse(fs.readFileSync(p));const catalogue=read('data/catalogue.json'),geometry=read('data/geometry.json'),metadata=read('data/metadata.json');
-const source=fs.readFileSync('app.js','utf8');
-const context=vm.createContext({});vm.runInContext(source.slice(source.indexOf('function isFiniteVector'),source.indexOf('function buildTruth')),context);
-let finiteSegments=0,missingLengths=0,pulseCount=0;const ids=new Set();const counts=new Map();
-for(const entry of catalogue){assert(!ids.has(entry.id));ids.add(entry.id);const event=read(`data/events/${entry.id}.json`);assert.equal(event.pulses.length,entry.pulses);assert.equal(event.primary.pdg,entry.pdg);assert.equal(event.interaction,entry.interaction);assert(Math.abs(event.primary.dir[2]+event.coszen)<1e-12);let previous=-Infinity;for(const pulse of event.pulses){assert(pulse[1]>=previous);previous=pulse[1];assert(geometry.channels[pulse[0]]);assert(pulse.every(Number.isFinite));}pulseCount+=event.pulses.length;const segments=context.trackParticles(event);for(const p of segments){assert(p.shape!=='Dark');assert(p.length>0);const displacement=p.dir.map(x=>x*p.length);assert(Math.abs(Math.hypot(...displacement)-p.length)<1e-6);assert(Number.isFinite(p.time+p.length/p.speed));finiteSegments++;}missingLengths+=event.truth.filter(p=>p.length===null).length;const key=entry.cell.join(',');counts.set(key,(counts.get(key)||0)+1);assert(counts.get(key)<=2);}
-assert.equal(ids.size,metadata.events);assert.equal(counts.size,metadata.occupied_cells);assert.equal(pulseCount,metadata.selected_quality.pulses);assert.equal(missingLengths,metadata.selected_quality.truth_missing_length);assert.equal(geometry.surface_z-geometry.bedrock_z,2810);assert.equal(read('data/validation.json').events_verified,catalogue.length);
-// Stored zero/unknown lengths must never become tracks; a Dark parent must not duplicate children.
-const base={pdg:13,shape:'Null',pos:[0,0,0],dir:[0,0,1],time:0,speed:.299792458,length:10};
-assert.equal(context.trackParticles({truth:[{...base,shape:'Dark'},{...base,parent:0},{...base,length:null},{...base,length:0}]}).length,1);
-assert.equal(context.trackParticles({truth:[{...base,length:20},{...base,parent:0}]}).length,1);
-console.log(JSON.stringify({status:'passed',events:ids.size,pulses:pulseCount,renderable_native_lepton_segments:finiteSegments,missing_lengths_preserved:missingLengths,occupied_cells:counts.size},null,2));
+const fs=require('node:fs'),assert=require('node:assert/strict'),crypto=require('node:crypto');
+process.chdir(__dirname);const MC=require('./model.js');const read=p=>JSON.parse(fs.readFileSync(p));
+const catalogue=read('data/catalogue.json'),geometry=read('data/geometry.json'),metadata=read('data/metadata.json');
+let native=0,vertices=0,pulses=0;const ids=new Set();
+for(const entry of catalogue){assert(!ids.has(entry.id));ids.add(entry.id);const path=`data/events/${entry.id}.json`;assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path)).digest('hex'),entry.sha256);const e=read(path);assert.equal(e.pulses.length,entry.pulses);assert(Math.abs(e.primary.dir[2]+e.coszen)<1e-12);pulses+=e.pulses.length;
+ for(const s of MC.segments(e)){assert(s.length>0);assert(s.endTime>=s.time);assert(s.shape!=='Dark');assert(Math.abs(MC.distance(s.pos,s.end)-s.length)<1e-6);if(s.provenance==='length'){native++;assert.equal(s.length,e.truth[s.index].length);}else{vertices++;assert(e.truth.some(c=>c.parent===s.index && MC.distance(c.pos,s.end)<1e-4));}}
+}
+assert.equal(ids.size,metadata.events);assert.equal(pulses,metadata.selected_quality.pulses);assert.equal(geometry.surface_z-geometry.bedrock_z,2810);
+const state={flavor:14,interaction:1,sign:0,energy:100,zenith:60,azimuth:180,azimuthEnabled:false};
+for(const flavor of [12,14,16])for(const sign of [-1,1])for(const interaction of [1,2])for(const energy of [1,10,100,500])for(const zenith of [0,90,180]){const result=MC.rank(catalogue,{...state,flavor,sign,interaction,energy,zenith});assert(result.length);assert(result.every(x=>Math.abs(x.event.pdg)===flavor&&Math.sign(x.event.pdg)===sign&&x.event.interaction===interaction));assert(result.every((x,i)=>i===0||x.score>=result[i-1].score));}
+// Selecting a stored event's exact energy/direction recovers it, even at 0/360 degrees.
+const e=catalogue[0];assert(MC.rank(catalogue,{...state,flavor:Math.abs(e.pdg),sign:Math.sign(e.pdg),interaction:e.interaction,energy:e.energy,zenith:Math.acos(e.coszen)*180/Math.PI,azimuth:e.azimuth*180/Math.PI,azimuthEnabled:true})[0].score<1e-20);
+const base={pdg:15,parent:null,shape:'StartingTrack',pos:[0,0,0],dir:[0,0,1],time:0,length:null,speed:.299792458};
+assert.equal(MC.segments({truth:[base,{...base,parent:0,pdg:11}]}).length,0,'coincident vertices must not become a track');
+const tau=MC.segments({truth:[base,{...base,parent:0,pdg:11,pos:[0,0,.001],time:1}]}).at(0);assert.equal(tau.pdg,15);assert.equal(tau.length,.001);assert.equal(tau.endTime,1);
+const nu=MC.segments({truth:[{...base,pdg:16},{...base,parent:0,pos:[0,0,2],time:10}]}).at(0);assert.equal(nu.pdg,16,'incoming neutrino-to-tau vertex connection belongs to the neutrino');assert.equal(nu.length,2);
+assert.equal(MC.segments({truth:[base,{...base,parent:0,pdg:11,pos:[0,0,1],time:1},{...base,parent:0,pdg:12,pos:[0,0,2],time:2}]}).length,0,'ambiguous endpoint must not be invented');
+const mu={...base,pdg:13,length:10};assert.equal(MC.segments({truth:[{...mu,shape:'Dark'},{...mu,parent:0}]}).length,1);assert.equal(MC.segments({truth:[mu,{...mu,parent:0}]}).length,1);
+console.log(JSON.stringify({status:'passed',events:ids.size,pulses,native_length_segments:native,vertex_connection_segments:vertices,slider_combinations:144},null,2));

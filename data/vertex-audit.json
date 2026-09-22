@@ -1,0 +1,112 @@
+{
+  "events": 2368,
+  "groups": {
+    "abs_pdg_12_to_11": {
+      "nodes": 399,
+      "coincident": 399,
+      "displaced": 0,
+      "with_daughters": 0,
+      "maximum_distance_m": 0,
+      "maximum_abs_delta_time_ns": 0
+    },
+    "abs_pdg_13_to_11": {
+      "nodes": 391,
+      "coincident": 2,
+      "displaced": 389,
+      "with_daughters": 0,
+      "maximum_distance_m": 1268.871719687239,
+      "maximum_abs_delta_time_ns": 18504.68391779217
+    },
+    "abs_pdg_16_to_15": {
+      "nodes": 386,
+      "coincident": 386,
+      "displaced": 0,
+      "with_daughters": 0,
+      "maximum_distance_m": 0,
+      "maximum_abs_delta_time_ns": 0
+    },
+    "abs_pdg_14_to_11": {
+      "nodes": 4,
+      "coincident": 4,
+      "displaced": 0,
+      "with_daughters": 0,
+      "maximum_distance_m": 0,
+      "maximum_abs_delta_time_ns": 0
+    }
+  },
+  "examples": {
+    "abs_pdg_12_to_11": {
+      "event": "121029-000165-1606-0",
+      "source": "genie/121029/upgrade_genie_level4_queso_121029_000165.i3.zst",
+      "parent_type": "NuEBar",
+      "child_type": "EPlus",
+      "parent_position_m": [
+        18.05825351493078,
+        -43.78498415718613,
+        -460.23927946549804
+      ],
+      "child_position_m": [
+        18.05825351493078,
+        -43.78498415718613,
+        -460.23927946549804
+      ],
+      "distance_m": 0.0,
+      "delta_time_ns": 0.0
+    },
+    "abs_pdg_13_to_11": {
+      "event": "141029-002327-428-0",
+      "source": "genie/141029/upgrade_genie_level4_queso_141029_002327.i3.zst",
+      "parent_type": "MuPlus",
+      "child_type": "EPlus",
+      "parent_position_m": [
+        89.52509069824768,
+        -48.56118923060071,
+        -348.9068505253176
+      ],
+      "child_position_m": [
+        90.180866754532,
+        -52.121560797893274,
+        -336.31034205737643
+      ],
+      "distance_m": 13.106422605581406,
+      "delta_time_ns": 2506.0684182317364
+    },
+    "abs_pdg_16_to_15": {
+      "event": "161029-000434-526-0",
+      "source": "genie/161029/upgrade_genie_level4_queso_161029_000434.i3.zst",
+      "parent_type": "NuTauBar",
+      "child_type": "TauPlus",
+      "parent_position_m": [
+        61.54353552908053,
+        -36.74487650850397,
+        -272.1279760667619
+      ],
+      "child_position_m": [
+        61.54353552908053,
+        -36.74487650850397,
+        -272.1279760667619
+      ],
+      "distance_m": 0.0,
+      "delta_time_ns": 0.0
+    },
+    "abs_pdg_14_to_11": {
+      "event": "140029-000826-999-0",
+      "source": "genie/140029/upgrade_genie_level4_queso_140029_000826.i3.zst",
+      "parent_type": "NuMu",
+      "child_type": "EPlus",
+      "parent_position_m": [
+        81.56902523202413,
+        -129.27002636094724,
+        -532.6148472246025
+      ],
+      "child_position_m": [
+        81.56902523202413,
+        -129.27002636094724,
+        -532.6148472246025
+      ],
+      "distance_m": 0.0,
+      "delta_time_ns": 0.0
+    }
+  },
+  "interpretation": "A stored child position is its birth site. Displacement from a parent start describes the parent-to-birth connection, not the child flight after birth. Coincident endpoints give zero length."
+}

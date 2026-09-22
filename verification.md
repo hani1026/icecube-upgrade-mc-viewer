@@ -12,7 +12,7 @@
 
 `node tests.cjs` passes event integrity, coverage, native coordinate/direction conventions, 1,559 renderable finite lepton segments, and prevention of invented or double-drawn tracks. `node --check app.js` passes.
 
-## Browser checks
+## Previous UI browser checks (before the original-style restoration)
 
 Verified on the public HTTPS site in the Codex browser (desktop 1280 × 720 and responsive 390 × 844):
 
@@ -27,3 +27,11 @@ Verified on the public HTTPS site in the Codex browser (desktop 1280 × 720 and 
 - Browser error-log inspection returned no errors during category/filter checks.
 
 The checks validate a representative set of visible interactions. The exact native-data validator covers all exported events, separately from browser rendering.
+
+## Original-style revision
+
+- Full-data tests: 2,368 event payload SHA256 values remain unchanged; all 325,537 pulses preserved.
+- Native finite paths remain 1,559. The endpoint fallback produces no extra segments for these source records.
+- 144 combinations of particle/sign/interaction, energy extremes and zenith directions return correctly classified, distance-ranked native events.
+- Endpoint tests verify zero displacement for shared birth vertices, preservation of a 1 mm tau displacement, proper parent identity for neutrino-to-tau connections, rejection of ambiguous endpoints, and suppression of duplicate propagated tracks.
+- The public UI revision is verified after deployment.
