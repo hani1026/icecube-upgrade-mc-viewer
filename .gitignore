@@ -1,0 +1,6 @@
+.DS_Store
+__pycache__/
+*.pyc
+*.i3
+*.i3.zst
+*.i3.bz2

@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "comparisons": "Exact native values; null only for nonfinite truth scalars",
+  "failures": 0,
+  "modules_verified": 5854,
+  "channels_verified": 15378,
+  "events_verified": 2368,
+  "pulses_verified": 325537,
+  "truth_particles_verified": 26591,
+  "source_files_verified": 180
+}
