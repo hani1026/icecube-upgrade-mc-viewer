@@ -14,4 +14,16 @@
 
 ## Browser checks
 
-Public GitHub Pages rendering and controls are checked after deployment; results will be recorded here.
+Verified on the public HTTPS site in the Codex browser (desktop 1280 × 720 and responsive 390 × 844):
+
+- The 3D detector, native pulse markers, recorded muon paths, dashed direction guide, ice column and bedrock render successfully.
+- All 12 flavor/sign/interaction combinations load real events; energy, cos(zenith), and azimuth filters narrow the catalogue.
+- An intentionally empty anti-ντ CC cell (1–5 GeV, cos θ −1 to −0.6, azimuth 180–270°) shows no event and disables event navigation; widening energy restores real data.
+- For event `141029-000862-903-0`, the midpoint slider shows 85 / 118 pulses at +1.70 µs. Switching the dust overlay off retains the same time and pulse count.
+- Play restarts at early pulses and advances the actual event timeline. A later accessibility fix keeps the play/pause label in sync with its state.
+- Event details for `161029-000096-1055-0` show the source file, 68 pulses / 50 channels, 14 truth particles and zero stored finite lepton segments; no tau path is invented.
+- Copy link reports success. Reloading its event hash restores the identical event. The browser automation clipboard readback did not return content, so clipboard contents were not independently verified.
+- Mobile layout keeps the scene and timeline above the vertically scrollable filters, with Options always expanded; the temporary viewport override was reset.
+- Browser error-log inspection returned no errors during category/filter checks.
+
+The checks validate a representative set of visible interactions. The exact native-data validator covers all exported events, separately from browser rendering.
