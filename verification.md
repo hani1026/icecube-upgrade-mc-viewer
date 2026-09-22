@@ -20,7 +20,7 @@ Verified on the public HTTPS site in the Codex browser (desktop 1280 × 720 and 
 - All 12 flavor/sign/interaction combinations load real events; energy, cos(zenith), and azimuth filters narrow the catalogue.
 - An intentionally empty anti-ντ CC cell (1–5 GeV, cos θ −1 to −0.6, azimuth 180–270°) shows no event and disables event navigation; widening energy restores real data.
 - For event `141029-000862-903-0`, the midpoint slider shows 85 / 118 pulses at +1.70 µs. Switching the dust overlay off retains the same time and pulse count.
-- Play restarts at early pulses and advances the actual event timeline. A later accessibility fix keeps the play/pause label in sync with its state.
+- Play restarts at early pulses and advances the actual event timeline. The play/pause label is synchronized with its state. Versioned app assets prevent a cached older script from surviving an update.
 - Event details for `161029-000096-1055-0` show the source file, 68 pulses / 50 channels, 14 truth particles and zero stored finite lepton segments; no tau path is invented.
 - Copy link reports success. Reloading its event hash restores the identical event. The browser automation clipboard readback did not return content, so clipboard contents were not independently verified.
 - Mobile layout keeps the scene and timeline above the vertically scrollable filters, with Options always expanded; the temporary viewport override was reset.
